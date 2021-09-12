@@ -1,0 +1,9 @@
+.nav {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    margin-bottom: 10px;
+}
+.todo {
+    margin: 100px auto 0;
+    max-width: 450px;
+}
