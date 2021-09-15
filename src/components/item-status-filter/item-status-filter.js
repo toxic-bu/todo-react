@@ -3,12 +3,19 @@ import "./item-status-filter.js";
 
 export default class ItemStatusFilter extends Component {
     render() {
-        return (
-            <div className="btn-group">
-                <button className="btn btn-info">All</button>
-                <button className="btn btn-outline-secondary">Active</button>
-                <button className="btn btn-outline-secondary">Done</button>
-            </div>
-        );
+        const element = this.props.btns.map((item) => {
+            const { btnLabel, active, id } = item;
+            let classNames = "btn btn-outline-secondary";
+            if (active) {
+                classNames += " active";
+            }
+            return (
+                <button key={id} className={classNames} onClick={() => this.props.onToggleBtn(id)}>
+                    {btnLabel}
+                </button>
+            );
+        });
+
+        return <div className="btn-group">{element}</div>;
     }
 }

@@ -8,15 +8,20 @@ import "./app.css";
 
 export default class App extends Component {
     maxId = 100;
-    filterOn = false;
     state = {
         todoData: [
             this.createTodoItem("Drink Coffee"),
             this.createTodoItem("Make Awesome App"),
             this.createTodoItem("Have a lunch"),
         ],
-        filtered: [],
+        filterBtns: [
+            { btnLabel: "All", active: true, id: 1 },
+            { btnLabel: "Active", active: false, id: 2 },
+            { btnLabel: "Done", active: false, id: 3 },
+        ],
+        searchText: "",
     };
+
     createTodoItem(label) {
         return {
             label,
@@ -64,30 +69,46 @@ export default class App extends Component {
         });
     };
     onSearch = (text) => {
-        this.filterOn = true;
-        if (text.trim() === "") {
-            this.filterOn = false;
-        }
-        this.setState((state) => {
-            const newFiltered = state.todoData.filter((el) => el.label.toLowerCase().includes(text.toLowerCase()));
+        this.setState({ searchText: text });
+    };
+    onToggleBtn = (id) => {
+        this.setState(({ filterBtns }) => {
+            const btnToggled = filterBtns.map((el) =>
+                el.id === id ? { ...el, active: true } : { ...el, active: false }
+            );
+
             return {
-                filtered: newFiltered,
+                filterBtns: btnToggled,
             };
         });
     };
+    search = (dataArray, str, btns) => {
+        const btn = btns.findIndex((el) => el.active === true);
+        let filtered = dataArray.filter((item) => item.label.toLowerCase().includes(str.toLowerCase()));
+        if (btn === 1) {
+            filtered = filtered.filter((el) => el.done === false);
+        }
+        if (btn === 2) {
+            filtered = filtered.filter((el) => el.done === true);
+        }
+
+        return filtered;
+    };
+
     render() {
+        const { todoData, searchText, filterBtns } = this.state;
+        const visibleItems = this.search(todoData, searchText, filterBtns);
         const doneCount = this.state.todoData.filter((el) => el.done === true).length;
         const todoCount = this.state.todoData.length - doneCount;
-        const items = this.filterOn ? this.state.filtered : this.state.todoData;
         return (
             <div className="todo">
                 <AppHeader todo={todoCount} done={doneCount} />
                 <div className="nav d-flex">
                     <SearchPanel onSearch={this.onSearch} />
-                    <ItemStatusFilter />
+                    <ItemStatusFilter btns={this.state.filterBtns} onToggleBtn={this.onToggleBtn} />
                 </div>
                 <TodoList
-                    todos={items}
+                    todos={visibleItems}
                     onDeleted={this.deleteItem}
                     onToggleDone={this.onToggleDone}
                     onToggleImportant={this.onToggleImportant}
