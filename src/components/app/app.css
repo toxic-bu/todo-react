@@ -4,6 +4,7 @@
     margin-bottom: 10px;
 }
 .todo {
-    margin: 100px auto 0;
+    margin: 50px auto 0;
+    padding: 0 10px;
     max-width: 450px;
 }
