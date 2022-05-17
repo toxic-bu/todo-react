@@ -1,5 +1,9 @@
 ## Simple Todo Application
 
+### Stack
+- React
+- Bootstrap
+
 ### Features
 - Add todos
 - Remove todos
